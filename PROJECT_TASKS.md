@@ -9,19 +9,20 @@
 - [x] Configurar `application.yml`.
 - [x] Crear migración inicial de Flyway.
 - [x] Crear README inicial.
+- [x] Crear el repositorio con la base inicial del mismo.
 
 ## Fase 2 - CRUD MVP
 
-- [ ] Implementar entidad `SurfSpot`.
-- [ ] Implementar DTOs de `SurfSpot`.
-- [ ] Implementar repository de `SurfSpot`.
-- [ ] Implementar service de `SurfSpot`.
-- [ ] Implementar controller de `SurfSpot`.
-- [ ] Implementar entidad `SkiResort`.
-- [ ] Implementar DTOs de `SkiResort`.
-- [ ] Implementar repository de `SkiResort`.
-- [ ] Implementar service de `SkiResort`.
-- [ ] Implementar controller de `SkiResort`.
+- [x] Implementar entidad `SurfSpot`.
+- [x] Implementar DTOs de `SurfSpot`.
+- [x] Implementar repository de `SurfSpot`.
+- [x] Implementar service de `SurfSpot`.
+- [x] Implementar controller de `SurfSpot`.
+- [x] Implementar entidad `SkiResort`.
+- [x] Implementar DTOs de `SkiResort`.
+- [x] Implementar repository de `SkiResort`.
+- [x] Implementar service de `SkiResort`.
+- [x] Implementar controller de `SkiResort`.
 
 ## Fase 3 - Calidad API
 
