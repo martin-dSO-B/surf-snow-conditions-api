@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: surf-snow-conditions-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/surfsnow}
+    username: ${SPRING_DATASOURCE_USERNAME:surfsnow}
+    password: ${SPRING_DATASOURCE_PASSWORD:surfsnow}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html

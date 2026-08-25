@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: surfsnow-postgres
+    environment:
+      POSTGRES_DB: surfsnow
+      POSTGRES_USER: surfsnow
+      POSTGRES_PASSWORD: surfsnow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U surfsnow -d surfsnow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
