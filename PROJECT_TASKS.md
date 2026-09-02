@@ -26,12 +26,12 @@
 
 ## Fase 3 - Calidad API
 
-- [ ] Añadir Bean Validation.
-- [ ] Añadir excepción `ResourceNotFoundException`.
-- [ ] Añadir `GlobalExceptionHandler`.
-- [ ] Añadir formato estándar de error.
+- [x] Añadir Bean Validation.
+- [x] Añadir excepción `ResourceNotFoundException`.
+- [x] Añadir `GlobalExceptionHandler`.
+- [x] Añadir formato estándar de error.
 - [x] Añadir Swagger/OpenAPI.
-- [ ] Añadir datos iniciales con Flyway.
+- [x] Añadir datos iniciales con Flyway.
 
 ## Fase 4 - Forecast Y Scoring
 

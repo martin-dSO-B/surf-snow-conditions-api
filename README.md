@@ -27,8 +27,10 @@ Base project initialized:
 - Base package `com.portfolio.surfsnow`.
 - Clean package structure for `spot`, `resort`, `forecast`, `scoring`, and `shared`.
 - PostgreSQL configured through Docker Compose.
-- Flyway enabled with an initial schema for surf spots and ski resorts.
+- Flyway enabled with schema and seed data for surf spots and ski resorts.
 - Swagger/OpenAPI configured.
+- Bean Validation enabled for API requests.
+- Standard API error responses based on HTTP Problem Details.
 - Basic Spring context test.
 
 Authentication is intentionally not included in the MVP base.
@@ -108,6 +110,37 @@ Flyway migrations live in:
 src/main/resources/db/migration
 ```
 
+Flyway creates the initial schema and inserts sample surf spots and ski resorts on application startup.
+
+## Error Responses
+
+The API returns standardized error responses using HTTP Problem Details.
+
+Example validation error:
+
+```json
+{
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed",
+  "instance": "/api/surf-spots",
+  "errors": {
+    "name": "must not be blank"
+  }
+}
+```
+
+Example not found error:
+
+```json
+{
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Surf spot not found with id: 999",
+  "instance": "/api/surf-spots/999"
+}
+```
+
 ## API Documentation
 
 When the application is running:
@@ -115,7 +148,7 @@ When the application is running:
 - Swagger UI: `http://localhost:8080/swagger-ui/index.html`
 - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
 
-## Planned MVP Endpoints
+## MVP Endpoints
 
 Surf spots:
 

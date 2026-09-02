@@ -1,5 +1,6 @@
 package com.portfolio.surfsnow.spot;
 
+import com.portfolio.surfsnow.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +67,7 @@ public class SurfSpotService {
 
     private SurfSpot findEntityById(Long id) {
         return surfSpotRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Surf spot not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Surf spot not found with id: " + id));
     }
 
     private SurfSpotResponse toResponse(SurfSpot surfSpot) {

@@ -1,5 +1,6 @@
 package com.portfolio.surfsnow.resort;
 
+import com.portfolio.surfsnow.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,7 @@ public class SkiResortService {
 
     private SkiResort findEntityById(Long id) {
         return skiResortRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ski resort not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ski resort not found with id: " + id));
     }
 
     private void validateAltitudeRange(SkiResortRequest request) {
