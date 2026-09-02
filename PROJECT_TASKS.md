@@ -35,14 +35,25 @@
 
 ## Fase 4 - Forecast Y Scoring
 
-- [ ] Crear módulo `forecast`.
-- [ ] Crear forecast mockeado para surf.
-- [ ] Crear forecast mockeado para ski.
-- [ ] Crear módulo `scoring`.
-- [ ] Implementar surf score.
-- [ ] Implementar ski score.
-- [ ] Añadir endpoints `/api/scores/surf/{spotId}`.
-- [ ] Añadir endpoints `/api/scores/ski/{resortId}`.
+- [x] Paso previo: añadir `midAltitude` a ski resorts.
+- [x] Crear migración Flyway `V3__add_mid_altitude_to_ski_resorts.sql`.
+- [x] Actualizar entidad `SkiResort` con `midAltitude`.
+- [x] Actualizar DTOs CRUD de `SkiResort` con `midAltitude`.
+- [x] Actualizar validación `baseAltitude <= midAltitude <= topAltitude`.
+- [x] Crear módulo `forecast`.
+- [x] Integrar Open-Meteo Weather API.
+- [x] Integrar Open-Meteo Marine API.
+- [x] Crear forecast real para surf.
+- [x] Crear forecast real para ski con base, cota intermedia y cota alta.
+- [x] Crear fallback mockeado para forecasts.
+- [x] Añadir endpoint `/api/forecasts/surf/{spotId}`.
+- [x] Añadir endpoint `/api/forecasts/ski/{resortId}`.
+- [x] Crear módulo `scoring`.
+- [x] Implementar surf score.
+- [x] Implementar ski score.
+- [x] Añadir endpoints `/api/scores/surf/{spotId}`.
+- [x] Añadir endpoints `/api/scores/ski/{resortId}`.
+- [x] Documentar Open-Meteo y atribución en README.
 
 ## Fase 5 - Tests
 

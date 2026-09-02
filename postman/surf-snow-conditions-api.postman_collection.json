@@ -1,0 +1,393 @@
+{
+  "info": {
+    "_postman_id": "2f2dc875-0b2f-4f7d-98b6-778b13098369",
+    "name": "Surf & Snow Conditions API",
+    "description": "Postman collection for local testing of the Surf & Snow Conditions API. Start PostgreSQL with Docker Compose and run the Spring Boot app before sending requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "surfSpotId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "skiResortId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "createdSurfSpotId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdSkiResortId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Docs",
+      "item": [
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/swagger-ui/index.html",
+              "host": ["{{baseUrl}}"],
+              "path": ["swagger-ui", "index.html"]
+            }
+          }
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v3/api-docs",
+              "host": ["{{baseUrl}}"],
+              "path": ["v3", "api-docs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Surf Spots CRUD",
+      "item": [
+        {
+          "name": "List Surf Spots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/surf-spots",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surf-spots"]
+            }
+          }
+        },
+        {
+          "name": "Get Surf Spot by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/surf-spots/{{surfSpotId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surf-spots", "{{surfSpotId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Surf Spot",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('createdSurfSpotId', body.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Surf Spot {{$timestamp}}\",\n  \"country\": \"Spain\",\n  \"region\": \"Canary Islands\",\n  \"latitude\": 28.0443,\n  \"longitude\": -16.5364,\n  \"difficulty\": \"INTERMEDIATE\",\n  \"bestWindDirection\": \"North\",\n  \"bestSwellDirection\": \"West\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surf-spots",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surf-spots"]
+            }
+          }
+        },
+        {
+          "name": "Update Created Surf Spot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Updated Surf Spot {{$timestamp}}\",\n  \"country\": \"Spain\",\n  \"region\": \"Canary Islands\",\n  \"latitude\": 28.0443,\n  \"longitude\": -16.5364,\n  \"difficulty\": \"ADVANCED\",\n  \"bestWindDirection\": \"East\",\n  \"bestSwellDirection\": \"Northwest\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surf-spots/{{createdSurfSpotId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surf-spots", "{{createdSurfSpotId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Created Surf Spot",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/surf-spots/{{createdSurfSpotId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surf-spots", "{{createdSurfSpotId}}"]
+            }
+          }
+        },
+        {
+          "name": "Surf Spot Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/surf-spots/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surf-spots", "999999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ski Resorts CRUD",
+      "item": [
+        {
+          "name": "List Ski Resorts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts"]
+            }
+          }
+        },
+        {
+          "name": "Get Ski Resort by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts/{{skiResortId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts", "{{skiResortId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Ski Resort",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('createdSkiResortId', body.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Ski Resort {{$timestamp}}\",\n  \"country\": \"Spain\",\n  \"region\": \"Pyrenees\",\n  \"latitude\": 42.5946,\n  \"longitude\": 1.6558,\n  \"baseAltitude\": 1600,\n  \"midAltitude\": 2100,\n  \"topAltitude\": 2600\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts"]
+            }
+          }
+        },
+        {
+          "name": "Update Created Ski Resort",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Updated Ski Resort {{$timestamp}}\",\n  \"country\": \"Spain\",\n  \"region\": \"Pyrenees\",\n  \"latitude\": 42.5946,\n  \"longitude\": 1.6558,\n  \"baseAltitude\": 1600,\n  \"midAltitude\": 2150,\n  \"topAltitude\": 2700\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts/{{createdSkiResortId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts", "{{createdSkiResortId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Created Ski Resort",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts/{{createdSkiResortId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts", "{{createdSkiResortId}}"]
+            }
+          }
+        },
+        {
+          "name": "Ski Resort Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts", "999999"]
+            }
+          }
+        },
+        {
+          "name": "Invalid Ski Resort Altitude Range",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Invalid Postman Ski Resort {{$timestamp}}\",\n  \"country\": \"Spain\",\n  \"region\": \"Pyrenees\",\n  \"latitude\": 42.5946,\n  \"longitude\": 1.6558,\n  \"baseAltitude\": 2000,\n  \"midAltitude\": 1500,\n  \"topAltitude\": 2600\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ski-resorts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ski-resorts"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forecasts",
+      "item": [
+        {
+          "name": "Get Surf Forecast",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/forecasts/surf/{{surfSpotId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecasts", "surf", "{{surfSpotId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Ski Forecast",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/forecasts/ski/{{skiResortId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecasts", "ski", "{{skiResortId}}"]
+            }
+          }
+        },
+        {
+          "name": "Surf Forecast Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/forecasts/surf/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecasts", "surf", "999999"]
+            }
+          }
+        },
+        {
+          "name": "Ski Forecast Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/forecasts/ski/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecasts", "ski", "999999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scores",
+      "item": [
+        {
+          "name": "Get Surf Score",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/scores/surf/{{surfSpotId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scores", "surf", "{{surfSpotId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Ski Score",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/scores/ski/{{skiResortId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scores", "ski", "{{skiResortId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

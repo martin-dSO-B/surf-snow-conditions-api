@@ -36,6 +36,9 @@ public class SkiResort {
     @Column(name = "base_altitude", nullable = false)
     private Integer baseAltitude;
 
+    @Column(name = "mid_altitude", nullable = false)
+    private Integer midAltitude;
+
     @Column(name = "top_altitude", nullable = false)
     private Integer topAltitude;
 
@@ -52,6 +55,7 @@ public class SkiResort {
             Double latitude,
             Double longitude,
             Integer baseAltitude,
+            Integer midAltitude,
             Integer topAltitude
     ) {
         this.name = name;
@@ -60,6 +64,7 @@ public class SkiResort {
         this.latitude = latitude;
         this.longitude = longitude;
         this.baseAltitude = baseAltitude;
+        this.midAltitude = midAltitude;
         this.topAltitude = topAltitude;
     }
 
@@ -120,6 +125,14 @@ public class SkiResort {
 
     public void setBaseAltitude(Integer baseAltitude) {
         this.baseAltitude = baseAltitude;
+    }
+
+    public Integer getMidAltitude() {
+        return midAltitude;
+    }
+
+    public void setMidAltitude(Integer midAltitude) {
+        this.midAltitude = midAltitude;
     }
 
     public Integer getTopAltitude() {

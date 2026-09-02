@@ -36,6 +36,10 @@ public record SkiResortRequest(
 
         @NotNull
         @Positive
+        Integer midAltitude,
+
+        @NotNull
+        @Positive
         Integer topAltitude
 ) {
 }

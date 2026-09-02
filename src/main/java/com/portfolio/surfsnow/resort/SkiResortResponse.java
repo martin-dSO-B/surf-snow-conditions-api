@@ -10,6 +10,7 @@ public record SkiResortResponse(
         Double latitude,
         Double longitude,
         Integer baseAltitude,
+        Integer midAltitude,
         Integer topAltitude,
         OffsetDateTime createdAt
 ) {

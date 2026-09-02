@@ -31,6 +31,9 @@ Base project initialized:
 - Swagger/OpenAPI configured.
 - Bean Validation enabled for API requests.
 - Standard API error responses based on HTTP Problem Details.
+- Real current forecasts from Open-Meteo for weather, marine, and ski elevation conditions.
+- Surf and ski condition scores calculated from current forecast data.
+- Ski resorts modelled with base, middle, and top altitude for elevation-aware forecasts.
 - Basic Spring context test.
 
 Authentication is intentionally not included in the MVP base.
@@ -111,6 +114,31 @@ src/main/resources/db/migration
 ```
 
 Flyway creates the initial schema and inserts sample surf spots and ski resorts on application startup.
+Migration `V3__add_mid_altitude_to_ski_resorts.sql` adds `mid_altitude` to existing ski resorts and backfills it as the midpoint between base and top altitude.
+
+## External Forecast Provider
+
+Forecast data is provided by Open-Meteo:
+
+```text
+https://open-meteo.com/
+```
+
+The MVP uses:
+
+- Weather Forecast API for temperature, wind, precipitation, snowfall, snow depth, and freezing level.
+- Marine Weather API for wave height, wave period, and swell data.
+
+No API key is required for non-commercial usage. The free tier is suitable for this portfolio project, but Open-Meteo requires attribution and commercial usage requires a commercial plan.
+
+Attribution:
+
+```text
+Weather and marine forecast data provided by Open-Meteo (https://open-meteo.com/).
+Open-Meteo data is based on open weather data sources and requires attribution under CC BY 4.0 where applicable.
+```
+
+If Open-Meteo is unavailable, the API can return deterministic fallback data marked with `dataSource: "MOCK_FALLBACK"`.
 
 ## Error Responses
 
@@ -184,13 +212,63 @@ GET /api/scores/surf/{spotId}
 GET /api/scores/ski/{resortId}
 ```
 
+Example ski resort request:
+
+```json
+{
+  "name": "Baqueira Beret",
+  "country": "Spain",
+  "region": "Catalonia",
+  "latitude": 42.6986,
+  "longitude": 0.9347,
+  "baseAltitude": 1500,
+  "midAltitude": 2055,
+  "topAltitude": 2610
+}
+```
+
+Example surf forecast response:
+
+```json
+{
+  "spotId": 1,
+  "spotName": "Mundaka",
+  "dateTime": "2026-09-02T22:15",
+  "temperatureC": 19.0,
+  "windSpeedKmh": 1.4,
+  "windDirectionDegrees": 180,
+  "windDirectionCompass": "S",
+  "precipitationMm": 0.0,
+  "waveHeightM": 0.6,
+  "wavePeriodS": 6.3,
+  "swellWaveHeightM": 0.52,
+  "swellWavePeriodS": 5.8,
+  "swellWaveDirectionDegrees": 315,
+  "swellWaveDirectionCompass": "NW",
+  "dataSource": "OPEN_METEO"
+}
+```
+
+Example ski forecast response shape:
+
+```json
+{
+  "resortId": 1,
+  "resortName": "Baqueira Beret",
+  "base": { "elevationType": "BASE", "elevation": 1500 },
+  "mid": { "elevationType": "MID", "elevation": 2055 },
+  "top": { "elevationType": "TOP", "elevation": 2610 },
+  "dataSource": "OPEN_METEO"
+}
+```
+
 ## Roadmap
 
 - Implement CRUD for surf spots.
 - Implement CRUD for ski resorts.
 - Add global API error handling.
 - Add seed data with Flyway.
-- Add mocked forecasts.
+- Add real Open-Meteo forecasts with deterministic fallback.
 - Add surf and ski scoring.
 - Add unit tests for services and scoring.
 - Add integration tests, CI/CD, auth, and deployment after the MVP is complete.

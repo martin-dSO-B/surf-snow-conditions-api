@@ -38,6 +38,7 @@ public class SkiResortService {
                 request.latitude(),
                 request.longitude(),
                 request.baseAltitude(),
+                request.midAltitude(),
                 request.topAltitude()
         );
 
@@ -55,6 +56,7 @@ public class SkiResortService {
         skiResort.setLatitude(request.latitude());
         skiResort.setLongitude(request.longitude());
         skiResort.setBaseAltitude(request.baseAltitude());
+        skiResort.setMidAltitude(request.midAltitude());
         skiResort.setTopAltitude(request.topAltitude());
 
         return toResponse(skiResort);
@@ -72,8 +74,8 @@ public class SkiResortService {
     }
 
     private void validateAltitudeRange(SkiResortRequest request) {
-        if (request.topAltitude() < request.baseAltitude()) {
-            throw new IllegalArgumentException("Top altitude must be greater than or equal to base altitude");
+        if (request.midAltitude() < request.baseAltitude() || request.midAltitude() > request.topAltitude()) {
+            throw new IllegalArgumentException("Middle altitude must be greater than or equal to base altitude and less than or equal to top altitude");
         }
     }
 
@@ -86,6 +88,7 @@ public class SkiResortService {
                 skiResort.getLatitude(),
                 skiResort.getLongitude(),
                 skiResort.getBaseAltitude(),
+                skiResort.getMidAltitude(),
                 skiResort.getTopAltitude(),
                 skiResort.getCreatedAt()
         );

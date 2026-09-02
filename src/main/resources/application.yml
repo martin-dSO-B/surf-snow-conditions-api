@@ -21,3 +21,8 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui/index.html
+
+open-meteo:
+  weather-base-url: https://api.open-meteo.com/v1/forecast
+  marine-base-url: https://marine-api.open-meteo.com/v1/marine
+  fallback-enabled: true
