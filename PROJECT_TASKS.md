@@ -57,10 +57,10 @@
 
 ## Fase 5 - Tests
 
-- [ ] Test unitario de `SurfSpotService`.
-- [ ] Test unitario de `SkiResortService`.
-- [ ] Test unitario de `SurfScoringService`.
-- [ ] Test unitario de `SkiScoringService`.
+- [x] Test unitario de `SurfSpotService`.
+- [x] Test unitario de `SkiResortService`.
+- [x] Test unitario de `SurfScoringService`.
+- [x] Test unitario de `SkiScoringService`.
 - [x] Test básico de contexto Spring.
 - [x] Documentar cómo ejecutar tests.
 

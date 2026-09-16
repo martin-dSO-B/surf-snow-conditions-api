@@ -47,4 +47,31 @@ class SurfScoringServiceTest {
         assertThat(response.recommendation()).isEqualTo("Excellent surf conditions");
         assertThat(response.dataSource()).isEqualTo(DataSource.OPEN_METEO);
     }
+
+    @Test
+    void returnsPoorScoreForSmallMessyColdSurfConditions() {
+        when(forecastService.getSurfForecastData(1L)).thenReturn(new SurfForecastData(
+                1L,
+                "Mundaka",
+                "2026-09-02T12:00",
+                6.0,
+                42.0,
+                240,
+                "SW",
+                12.0,
+                0.3,
+                5.0,
+                0.2,
+                6.0,
+                315,
+                "NW",
+                DataSource.MOCK_FALLBACK
+        ));
+
+        SurfScoreResponse response = surfScoringService.getSurfScore(1L);
+
+        assertThat(response.surfScore()).isEqualTo(1.2);
+        assertThat(response.recommendation()).isEqualTo("Poor surf conditions");
+        assertThat(response.dataSource()).isEqualTo(DataSource.MOCK_FALLBACK);
+    }
 }
