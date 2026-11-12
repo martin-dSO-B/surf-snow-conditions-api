@@ -64,14 +64,56 @@
 - [x] Test básico de contexto Spring.
 - [x] Documentar cómo ejecutar tests.
 
-## Fase 6 - Avanzado
+## Fase 6 - Forecast Futuro Y Granularidad
+
+- [ ] Definir DTOs de forecast futuro para surf con lista temporal de puntos horarios.
+- [ ] Definir DTOs de forecast futuro para ski con lista temporal de puntos horarios por cota: base, media y alta.
+- [ ] Ampliar integración Open-Meteo Weather API usando `hourly` en lugar de depender solo de `current`.
+- [ ] Ampliar integración Open-Meteo Marine API usando `hourly` para oleaje, periodo y swell.
+- [ ] Limitar el horizonte inicial a 48 horas para mantener respuestas útiles y ligeras.
+- [ ] Usar granularidad horaria inicial: 1 salida por hora.
+- [ ] Crear endpoint agregado de condiciones de surf que devuelva spot, forecast horario, score horario y mejor ventana en una sola llamada Front -> Back.
+- [ ] Crear endpoint agregado de condiciones de ski que devuelva resort, forecast horario por cotas, score horario y mejor ventana en una sola llamada Front -> Back.
+- [ ] Mantener los endpoints actuales de forecast/score como vista de condiciones actuales o compatibilidad interna mientras aporte valor.
+- [ ] Evitar llamadas duplicadas a Open-Meteo reutilizando datos de forecast para calcular scores.
+- [ ] Añadir cache backend simple con TTL corto para forecast por localización y horizonte, sin Redis en esta fase.
+- [ ] Añadir fallback mockeado también para forecast futuro.
+- [ ] Añadir tests unitarios para mapeo temporal, cálculo de score horario y selección de mejor ventana.
+- [ ] Documentar en README el horizonte, granularidad y estrategia de eficiencia.
+
+## Fase 7 - App Web Visual
+
+- [ ] Crear aplicación frontend con React, TypeScript y Vite.
+- [ ] Definir estructura `frontend/` dentro del repositorio.
+- [ ] Crear cliente API para consumir los endpoints agregados del backend Spring Boot.
+- [ ] Crear pantalla principal con resumen de surf spots y ski resorts.
+- [ ] Crear vista de detalle de surf spot con forecast horario, surf score horario y mejor ventana.
+- [ ] Crear vista de detalle de ski resort con forecast horario, ski score horario y mejor ventana.
+- [ ] Mostrar scores con tarjetas, colores y recomendaciones visibles.
+- [ ] Añadir estados de carga, error y datos vacíos.
+- [ ] Configurar CORS en Spring Boot para desarrollo local.
+- [ ] Documentar en README cómo ejecutar backend y frontend.
+
+## Fase 8 - Calidad, CI Y Docker
+
+- [ ] Añadir Testcontainers.
+- [ ] Añadir GitHub Actions.
+- [ ] Añadir Dockerfile para backend.
+- [ ] Añadir Dockerfile para frontend si aporta valor.
+- [ ] Preparar ejecución conjunta con Docker Compose si aporta valor.
+
+## Fase 9 - Auth, Favoritos Y Alertas
 
 - [ ] Añadir Spring Security.
 - [ ] Añadir registro/login.
 - [ ] Añadir JWT.
 - [ ] Añadir favoritos.
 - [ ] Añadir alertas.
-- [ ] Añadir Testcontainers.
-- [ ] Añadir GitHub Actions.
-- [ ] Añadir Dockerfile.
-- [ ] Desplegar online.
+
+## Fase 10 - Despliegue Completo
+
+- [ ] Desplegar API online.
+- [ ] Desplegar app web online.
+- [ ] Configurar PostgreSQL gestionado.
+- [ ] Configurar variables de entorno.
+- [ ] Añadir URLs de demo al README.

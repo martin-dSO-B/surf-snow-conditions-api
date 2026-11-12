@@ -4,7 +4,7 @@
 
 Construir una API backend moderna en Java y Spring Boot para consultar, guardar y valorar condiciones meteorológicas de spots de surf y estaciones de ski.
 
-Este proyecto forma parte de un portfolio profesional orientado a demostrar capacidad real en backend moderno, APIs REST, PostgreSQL, testing, Docker, CI/CD, documentación técnica y despliegue online.
+Este proyecto forma parte de un portfolio profesional orientado a demostrar capacidad real en backend moderno, APIs REST, PostgreSQL, testing, Docker, CI/CD, documentación técnica, despliegue online y consumo de la API desde una app web visual.
 
 El objetivo no es hacer una demo superficial, sino un proyecto presentable en GitHub, LinkedIn y entrevistas técnicas para roles como Java Backend Developer, Backend Engineer, Spring Boot Developer o Backend/Data Developer.
 
@@ -51,6 +51,7 @@ El proyecto debe evidenciar:
 - Docker.
 - GitHub Actions.
 - OpenAPI/Swagger.
+- Consumo de la API desde una app web visual.
 - Seguridad con JWT en fase avanzada.
 - Despliegue online.
 - Documentación profesional.
@@ -95,6 +96,15 @@ Docker
 Docker Compose
 GitHub Actions
 Render, Railway o Fly.io
+```
+
+Frontend:
+
+```text
+React
+TypeScript
+Vite
+CSS moderno
 ```
 
 Calidad:
@@ -183,6 +193,18 @@ No incluir autenticación en el primer MVP salvo que ya esté cerrada la parte C
 
 Después del MVP, añadir:
 
+- Forecast futuro con granularidad horaria.
+- Horizonte inicial de 48 horas para surf y ski.
+- Score horario calculado sobre cada punto temporal relevante.
+- Mejor ventana recomendada para surf y ski.
+- Endpoints agregados para que el frontend necesite pocas llamadas al backend.
+- Cache backend simple con TTL corto para evitar llamadas repetidas a Open-Meteo.
+- App web visual read-only que consuma la API.
+- Listado y detalle de surf spots con forecast y score.
+- Listado y detalle de ski resorts con forecast y score.
+- Estados de carga, error y datos vacíos en frontend.
+- Configuración CORS para desarrollo local.
+- Documentación para ejecutar backend y frontend.
 - Registro de usuarios.
 - Login.
 - Autenticación JWT.
@@ -194,8 +216,132 @@ Después del MVP, añadir:
 - GitHub Actions.
 - Dockerfile de la aplicación.
 - Despliegue online.
-- Integración con API meteorológica real.
 - Cache con Redis solo si aporta valor claro.
+
+La app web visual debe tener prioridad antes de autenticación, favoritos y alertas, porque permite convertir la API en una demo de producto usable para GitHub, LinkedIn y entrevistas. Antes de construir la app web, la API debe evolucionar de condiciones actuales a forecast futuro con granularidad suficiente para que la UI muestre valor real. Auth, favoritos y alertas deben implementarse después, cuando exista una interfaz donde esas funcionalidades aporten valor visible.
+
+## Forecast Futuro Y Granularidad
+
+Estado actual:
+
+```text
+Los endpoints actuales de forecast devuelven condiciones actuales usando `current` de Open-Meteo.
+No devuelven serie temporal futura.
+```
+
+Objetivo:
+
+```text
+Ampliar la API para devolver forecast futuro horario, scores por franja y mejor ventana recomendada, manteniendo bajo el número de llamadas desde el frontend y hacia Open-Meteo.
+```
+
+Decisiones iniciales:
+
+- Horizonte inicial: próximas 48 horas.
+- Granularidad inicial: 1 salida por hora.
+- El backend seguirá siendo la fuente de verdad para forecast, scoring y selección de mejor ventana.
+- El frontend no debe calcular scores ni combinar datos meteorológicos complejos.
+- No añadir Redis en esta fase; si se necesita cache, usar cache backend simple con TTL corto.
+- Mantener los endpoints actuales de forecast/score como vista de condiciones actuales o compatibilidad interna mientras aporten valor.
+
+Estrategia de eficiencia Front -> Back:
+
+- Evitar que el detalle de un spot haga varias llamadas separadas para ubicación, forecast, score y recomendación.
+- Crear endpoints agregados orientados a la UI que devuelvan todo lo necesario para una pantalla de detalle.
+- El frontend debería poder pintar una vista de detalle con una sola llamada principal al backend.
+- Las pantallas de listado deben consumir endpoints ligeros y pedir detalle solo cuando el usuario entra en una localización.
+
+Endpoints agregados recomendados:
+
+```text
+GET /api/conditions/surf/{spotId}
+GET /api/conditions/ski/{resortId}
+```
+
+Respuesta conceptual para surf:
+
+```text
+spot
+currentConditions
+hourlyForecast[48]
+hourlyScores[48]
+bestWindow
+dataSource
+```
+
+Respuesta conceptual para ski:
+
+```text
+resort
+currentConditionsByElevation
+hourlyForecast[48] con base, mid y top
+hourlyScores[48]
+bestWindow
+dataSource
+```
+
+Estrategia de eficiencia Back -> Open-Meteo:
+
+- Surf requiere combinar Weather API y Marine API.
+- Para surf, hacer como máximo una llamada hourly a Weather API y una llamada hourly a Marine API por spot, horizonte y ventana de cache.
+- Ski puede aprovechar llamadas batch por elevación, enviando base, mid y top en una sola petición hourly a Weather API cuando Open-Meteo lo permita.
+- Reutilizar los datos de forecast obtenidos para calcular scores, evitando volver a llamar a Open-Meteo desde scoring.
+- Añadir cache backend por clave lógica: tipo de localización, id, coordenadas, horizonte y granularidad.
+- TTL recomendado inicial: 30-60 minutos, suficiente para desarrollo y demo sin introducir infraestructura externa.
+
+Modelo de scoring futuro:
+
+- Calcular un score por cada punto horario.
+- La mejor ventana debe seleccionarse a partir de los scores horarios.
+- Para surf, la mejor ventana puede priorizar score alto, altura/periodo razonables y viento moderado.
+- Para ski, la mejor ventana puede priorizar score alto, temperatura adecuada, viento moderado y nieve/precipitación favorable.
+- El endpoint debe devolver una recomendación textual general y, si aporta valor, una recomendación específica para la mejor ventana.
+
+Fallback mockeado:
+
+- El fallback debe evolucionar de `mock-current` a una serie temporal mockeada de 48 horas.
+- Los datos mock deben ser deterministas por localización para facilitar tests y demos repetibles.
+- El fallback debe respetar el mismo contrato de respuesta que Open-Meteo.
+
+## App Web Visual
+
+Objetivo:
+
+```text
+Crear una aplicación frontend sencilla y profesional que consuma la API y muestre spots, estaciones, forecasts y scores de forma visual.
+```
+
+Alcance inicial:
+
+- Crear carpeta `frontend/` dentro del repositorio.
+- Usar React, TypeScript y Vite.
+- Consumir preferentemente endpoints agregados del backend, como `/api/conditions/surf/{spotId}` y `/api/conditions/ski/{resortId}`.
+- Mostrar una pantalla principal con resumen de surf spots y ski resorts.
+- Mostrar detalle de surf spot con forecast horario, surf score horario y mejor ventana.
+- Mostrar detalle de ski resort con forecast horario por cotas, ski score horario y mejor ventana.
+- Representar scores con tarjetas, colores, etiquetas y recomendaciones.
+- Añadir estados de carga, error y datos vacíos.
+- Mantener la app read-only inicialmente, sin login ni favoritos.
+- Documentar ejecución local en README.
+
+Arquitectura recomendada:
+
+```text
+surf-snow-conditions-api
+├── src/
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── types/
+│   ├── package.json
+│   └── vite.config.ts
+├── docker-compose.yml
+└── README.md
+```
+
+La app web no debe duplicar reglas de negocio. El backend sigue siendo la fuente de verdad para forecasts, scoring, validaciones y persistencia.
 
 ## Entidades Principales
 
@@ -336,7 +482,7 @@ createdAt
 
 Reservado para fase avanzada.
 
-## Endpoints Del MVP
+## Endpoints Del MVP Y Evolución
 
 Surf spots:
 
@@ -371,6 +517,15 @@ Scores:
 GET /api/scores/surf/{spotId}
 GET /api/scores/ski/{resortId}
 ```
+
+Condiciones agregadas para frontend:
+
+```text
+GET /api/conditions/surf/{spotId}
+GET /api/conditions/ski/{resortId}
+```
+
+Estos endpoints se añadirán después del MVP inicial para devolver forecast futuro, scores horarios y mejor ventana en una sola respuesta orientada a la app web.
 
 Documentación:
 
@@ -578,6 +733,8 @@ Prioridades de testing:
 - Unit tests para servicios CRUD.
 - Unit tests para scoring de surf.
 - Unit tests para scoring de ski.
+- Unit tests para mapeo de forecast horario.
+- Unit tests para selección de mejor ventana futura.
 - Tests de validación de reglas de negocio.
 - Tests de integración para repositories con Testcontainers en fase avanzada.
 - Tests de controller si aportan valor.
@@ -682,31 +839,42 @@ Tareas:
 Objetivo:
 
 ```text
-Proyecto backend serio con auth, tests de integración y CI.
+Proyecto con forecast futuro granular y app web visual consumiendo el backend.
 ```
 
 Tareas:
 
-- Añadir Spring Security.
-- Implementar registro/login.
-- Implementar JWT.
-- Añadir favoritos.
-- Añadir alertas básicas.
-- Añadir Testcontainers.
-- Configurar GitHub Actions.
-- Preparar Dockerfile.
+- Ampliar forecast de `current` a `hourly`.
+- Definir horizonte inicial de 48 horas.
+- Definir granularidad horaria.
+- Crear endpoints agregados `/api/conditions/surf/{spotId}` y `/api/conditions/ski/{resortId}`.
+- Calcular scores horarios y mejor ventana.
+- Añadir cache backend simple con TTL corto para reducir llamadas a Open-Meteo.
+- Añadir fallback mockeado de forecast futuro.
+- Crear app web con React, TypeScript y Vite.
+- Crear cliente API para consumir el backend.
+- Crear pantalla principal de spots y resorts.
+- Crear vistas de detalle con forecast y score.
+- Añadir estados de carga, error y datos vacíos.
+- Configurar CORS para desarrollo local.
+- Documentar ejecución backend + frontend.
 
 ### Diciembre 2026
 
 Objetivo:
 
 ```text
-Proyecto desplegado y listo como portfolio item.
+Proyecto preparado para calidad avanzada, CI/CD y despliegue como portfolio item.
 ```
 
 Tareas:
 
+- Añadir Testcontainers.
+- Configurar GitHub Actions.
+- Preparar Dockerfile de backend.
+- Preparar Dockerfile de frontend si aporta valor.
 - Desplegar API.
+- Desplegar app web.
 - Configurar PostgreSQL gestionado.
 - Configurar variables de entorno.
 - Revisar Swagger público.
@@ -786,6 +954,9 @@ Orden recomendado de implementación:
 8. Añadir scoring.
 9. Añadir tests.
 10. Mejorar README.
-11. Añadir auth y funcionalidades avanzadas.
-12. Añadir CI/CD y despliegue.
+11. Añadir forecast futuro horario y endpoints agregados de condiciones.
+12. Añadir app web visual consumiendo la API.
+13. Añadir Testcontainers, CI/CD y Docker.
+14. Añadir auth, favoritos y alertas.
+15. Desplegar API y app web.
 ```
